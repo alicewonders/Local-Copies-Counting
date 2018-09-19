@@ -7,7 +7,7 @@ public class MulticastSender extends Thread {
     private int PORT;
     private InetAddress ADDRESS;
     private static final int BUFFER_SIZE = 1024;
-    private static final int SEND_PERIOD = 2000;
+    private static final int SEND_PERIOD = 4000;
 
     private DatagramSocket socket;
 
