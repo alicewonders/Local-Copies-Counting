@@ -25,12 +25,22 @@ public class MulticastReceiver extends Thread {
             copiesMap = new HashMap<>();
             while (true) {
                 DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
+                System.out.println("I am waiting......");
                 socket.receive(packet);
+                System.out.println("I received smth!");
                 copiesMap.put(packet.getAddress(), LocalTime.now());
+
+                Map<InetAddress, LocalTime> addressesToDelete = new HashMap<>();
                 for (Map.Entry<InetAddress, LocalTime> entry : copiesMap.entrySet()) {
                     if (LocalTime.now().isAfter(entry.getValue().plusSeconds(15))) {
-                        copiesMap.remove(entry.getKey(), entry.getValue());
+                        addressesToDelete.put(entry.getKey(), entry.getValue());
                     }
+                }
+
+                for (Map.Entry<InetAddress, LocalTime> address: addressesToDelete.entrySet()) {
+                    copiesMap.remove(address.getKey(), address.getValue());
+                }
+                for (Map.Entry<InetAddress, LocalTime> entry : copiesMap.entrySet()) {
                     System.out.println(entry.getKey().toString() + " " + entry.getValue().toString() + " ALIVE STATUS");
                 }
                 System.out.println();
@@ -39,9 +49,5 @@ public class MulticastReceiver extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        finally {
-            socket.close();
-        }
-
     }
 }
